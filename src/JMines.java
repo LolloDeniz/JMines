@@ -10,6 +10,7 @@ import javax.swing.border.EtchedBorder;
 @SuppressWarnings("Duplicates")
 
 public class JMines extends JFrame {
+//todo handle victory
 
     //fetch screen size
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
