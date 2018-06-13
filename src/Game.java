@@ -20,6 +20,7 @@ import java.util.stream.Stream;
     private ArrayList<Integer> mines;   //list of mines
 
     private double bombRate;
+    double blankBox;
 
     private boolean isGameOver = false;
     private boolean firstClick=true;
@@ -81,6 +82,7 @@ import java.util.stream.Stream;
                     //if there's a number I don't need ricorsion
                     if (!GridValues[x + i][y + j].isShown() && GridValues[x + i][y + j].getValue() != 0 && (!GridValues[x + i][y + j].isBomb())) {
                         GridValues[x + i][y + j].setShown();
+                        this.blankBox--;
                         Grid[x + i][y + j].setText("<html>" + String.valueOf(GridValues[x + i][y + j].getValue() + "<html>"));
                         Grid[x + i][y + j].setBackground(currentTheme.getShownBoxColor());
                     }
@@ -88,6 +90,7 @@ import java.util.stream.Stream;
             }
         }
         GridValues[x][y].setShown();
+        this.blankBox--;
         Grid[x][y].setText(" ");
         Grid[x][y].setBackground(currentTheme.getShownBoxColor());
     }
@@ -125,6 +128,8 @@ import java.util.stream.Stream;
 
         System.out.println("Generated " + mines.size() + " mines");
 
+        this.blankBox =(DIM*DIM)-mines.size();  //number of boxes without bomb
+
         for (Integer n : mines) {
 
             int x=n%DIM;
@@ -149,7 +154,9 @@ import java.util.stream.Stream;
         int x, y;
         boolean sureIsBomb = false;
         boolean maybeIsBomb = false;
-        JLabel errorMsg = new JLabel("<html><center>Oh no! You hit a bomb!<br>Try again<center></html>");
+        JLabel errorMsg = new JLabel("<html><center>Oh no! You hit a bomb!<br>Try again</center></html>");
+        JLabel winMsg = new JLabel("<html><center>You did it!<br>Clap! Clap!</center></html>");
+
 
         GridListener(int x, int y, JLabel[][] grid, MinesBox Content[][], ActionListener listener) {
 
@@ -184,12 +191,21 @@ import java.util.stream.Stream;
                         grid[x][y].setVerticalAlignment(SwingConstants.CENTER);
                         grid[x][y].setText((content[x][y].isBomb()) ? "<html>B</html>" : "<html>" + String.valueOf(content[x][y].getValue() + "</html>"));
                         grid[x][y].setBackground((content[x][y].isBomb()) ? currentTheme.getBombColor() : currentTheme.getShownBoxColor());
+                        content[x][y].setShown();
+                        blankBox--;
 
                         if (content[x][y].isBomb()) {
                             listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "GAMEOVER"));//Trigger the GAMEOVER event handled in JMines
                             showBombs();
                             JOptionPane.showMessageDialog(innerPanel, errorMsg, "GAME OVER", JOptionPane.ERROR_MESSAGE); //Game over popup
                             isGameOver = true;
+                        }
+                        if(blankBox==0){
+                            listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "GAMEOVER"));
+                            showBombs();
+                            winMsg.setHorizontalAlignment(SwingConstants.CENTER);
+                            JOptionPane.showMessageDialog(innerPanel, winMsg, "GREAT JOB", JOptionPane.PLAIN_MESSAGE); //Game over popup
+                            isGameOver=true;
                         }
                     }
                 }
