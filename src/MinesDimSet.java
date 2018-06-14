@@ -25,7 +25,7 @@ public class MinesDimSet extends JPanel {
         dimSlider = new JSlider(0,5,100, 10);
         dimSlider.setMajorTickSpacing(15);
         dimSlider.setPaintLabels(true);
-        minesSlider=new JSlider(0,10, 95, 10);
+        minesSlider=new JSlider(0,5, 95, 10);
         minesSlider.setMajorTickSpacing(20);
         minesSlider.setPaintLabels(true);
         JButton setButton=new JButton("Set");

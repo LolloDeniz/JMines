@@ -165,7 +165,6 @@ import java.util.stream.Stream;
             this.grid[x][y].setHorizontalTextPosition(JLabel.CENTER);
             this.grid[x][y].setVerticalTextPosition(JLabel.CENTER);
             this.grid[x][y].setFont(new Font("Default", Font.PLAIN, 18));
-            //TODO set dynamic font size (getAscent)
             this.grid[x][y].setForeground(currentTheme.getBoxFontColor());
             this.content = Content;
             this.x = x;
