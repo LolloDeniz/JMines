@@ -19,7 +19,7 @@ public class MinesDimSet extends JPanel {
 */
 
         this.listener=listener;
-        dimLabel=new JLabel("Select grid dimension");
+        dimLabel=new JLabel("Select grid boxDimension");
         minesLabel=new JLabel("Select mines percentage (%)");
 
         dimSlider = new JSlider(0,5,100, 10);

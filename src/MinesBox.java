@@ -1,5 +1,6 @@
 class MinesBox {
 
+
     private boolean bomb;
     private int value;
     private boolean shown;

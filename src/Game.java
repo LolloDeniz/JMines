@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import java.util.stream.Stream;
 
         /*package-private*/ class Game {
 
+    public static int boxDimension = 38;
     private int DIM;
     private JPanel innerPanel = new JPanel();
     private JPanel outerPanel;
@@ -23,27 +25,29 @@ import java.util.stream.Stream;
     double blankBox;
 
     private boolean isGameOver = false;
-    private boolean firstClick=true;
-
+    private boolean firstClick = true;
 
 
     //frame required for the ActionListener
     public Game(JMines frame, JPanel panel, int DIM, double bombRate, MinesTheme theme) {
         this.DIM = DIM;
         outerPanel = panel;
-        outerPanel.add(this.innerPanel);  //local innerPanel is added to external panel
         this.currentTheme = theme;
 
-        this.bombRate=bombRate;
+        this.bombRate = bombRate;
 
         Grid = MinesBox.matrix(DIM, DIM);
         topGrid = new JLabel[DIM][DIM];
 
         mines = new ArrayList<>();
 
-        innerPanel.setLayout(new GridLayout(DIM, DIM));
+        if (DIM < 10)
+            innerPanel.setLayout(new GridLayout(DIM, DIM));
+        else{
+            innerPanel.setLayout(null);
+            innerPanel.setPreferredSize(new Dimension(Game.boxDimension*DIM,Game.boxDimension*DIM));    //dimension set to activate scrolling
+        }
         innerPanel.setBackground(theme.getBorderColor());
-
 
         for (int x = 0; x < DIM; x++) {             //top
             for (int y = 0; y < DIM; y++) {
@@ -54,9 +58,27 @@ import java.util.stream.Stream;
                 topGrid[x][y].setHorizontalAlignment(JLabel.CENTER);
                 topGrid[x][y].addMouseListener(new Game.GridListener(x, y, topGrid, Grid, frame.ButtonListenerFactory()));
                 topGrid[x][y].setBorder(BorderFactory.createLineBorder(currentTheme.getBorderColor(), 2));
+                topGrid[x][y].setPreferredSize(new Dimension(Game.boxDimension, Game.boxDimension));
+
                 innerPanel.add(topGrid[x][y]);   //add single box
+                if (DIM >= 10)
+                    topGrid[x][y].setBounds(topGrid[x][y].getPreferredSize().height * x,
+                            topGrid[x][y].getPreferredSize().width * y,
+                            topGrid[x][y].getPreferredSize().height,
+                            topGrid[x][y].getPreferredSize().width);
             }
         }
+
+        JScrollPane scrollInnerPanel=new JScrollPane(innerPanel);
+        scrollInnerPanel.getHorizontalScrollBar().setBackground(currentTheme.getShownBoxColor());
+        scrollInnerPanel.getVerticalScrollBar().setBackground(currentTheme.getShownBoxColor());
+        scrollInnerPanel.getHorizontalScrollBar().setPreferredSize(new Dimension(8,8));
+        scrollInnerPanel.getVerticalScrollBar().setPreferredSize(new Dimension(8,8));
+        scrollInnerPanel.setLayout(new ScrollPaneLayout());
+
+        outerPanel.add(scrollInnerPanel);  //local innerPanel is added to external panel
+
+
         //TODO Add bomb char
 
         //debug mode
@@ -118,22 +140,22 @@ import java.util.stream.Stream;
         }
     }
 
-    private void BombsGenerator(){
+    private void BombsGenerator() {
         Random r = new Random();
 
         Stream.generate(() -> r.nextInt(DIM * DIM)).distinct()
-                .filter((i)-> !(Grid[i%DIM][i/DIM].isShown()))           //check is not the first clicked obj
+                .filter((i) -> !(Grid[i % DIM][i / DIM].isShown()))           //check is not the first clicked obj
                 .limit((long) (DIM * DIM * bombRate))                    //generation random number
                 .forEach(mines::add);                                    //add to array
 
         System.out.println("Generated " + mines.size() + " mines");
 
-        this.blankBox =(DIM*DIM)-mines.size();  //number of boxes without bomb
+        this.blankBox = (DIM * DIM) - mines.size();  //number of boxes without bomb
 
         for (Integer n : mines) {
 
-            int x=n%DIM;
-            int y=n/DIM;
+            int x = n % DIM;
+            int y = n / DIM;
 
             Grid[x][y].setBomb(true);
 
@@ -179,9 +201,9 @@ import java.util.stream.Stream;
                 if (mouseEvent.getModifiers() == MouseEvent.BUTTON1_MASK) {
                     content[x][y].setShown();
 
-                    if(firstClick) {
+                    if (firstClick) {
                         BombsGenerator();
-                        firstClick=false;
+                        firstClick = false;
                     }
                     if (content[x][y].getValue() == 0 && (!content[x][y].isBomb()))
                         ShowZeros(content, grid, x, y);
@@ -199,12 +221,12 @@ import java.util.stream.Stream;
                             JOptionPane.showMessageDialog(innerPanel, errorMsg, "GAME OVER", JOptionPane.ERROR_MESSAGE); //Game over popup
                             isGameOver = true;
                         }
-                        if(blankBox==0){
+                        if (blankBox == 0) {
                             listener.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "GAMEOVER"));
                             showBombs();
                             winMsg.setHorizontalAlignment(SwingConstants.CENTER);
                             JOptionPane.showMessageDialog(innerPanel, winMsg, "GREAT JOB", JOptionPane.PLAIN_MESSAGE); //Game over popup
-                            isGameOver=true;
+                            isGameOver = true;
                         }
                     }
                 }

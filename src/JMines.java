@@ -9,11 +9,10 @@ import javax.swing.border.EtchedBorder;
 @SuppressWarnings("Duplicates")
 
 public class JMines extends JFrame {
-//todo handle victory
 
     //fetch screen size
     private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private static int DIMX = 500, DIMY = 500;
+    private static int DIMX = 500, DIMY = 480;
     private static double LOCX = (screenSize.getWidth() - DIMY) / 2, LOCY = (screenSize.getHeight() - DIMX) / 2;
 
     //set theme
@@ -59,6 +58,7 @@ public class JMines extends JFrame {
 
         //this.setPreferredSize(new Dimension(DIMX, DIMY));
         this.setSize(DIMX, DIMY);
+        //this.setResizable(false);
 
         this.setLayout(new GridBagLayout());
         GridBagConstraints c = new GridBagConstraints();
@@ -113,7 +113,7 @@ public class JMines extends JFrame {
         pauseLabel.setFont(new Font("Default", Font.PLAIN, 22));
         pauseLabel.setForeground(currentTheme.getBoxFontColor());
 
-        grid.setBackground(currentTheme.getBorderColor());
+        grid.setBackground(currentTheme.getShownBoxColor());
         grid.setBorder(BorderFactory.createLineBorder(currentTheme.getShownBoxColor(), 5));
         //TODO use JScrollPane
 
@@ -122,7 +122,7 @@ public class JMines extends JFrame {
 
     private JPanel SetSide() {
 
-        //dimension is given by buttons dimension (with padding)
+        //boxDimension is given by buttons boxDimension (with padding)
 
         //panels settings and look
         JPanel sidePanel = new JPanel();
@@ -223,7 +223,7 @@ public class JMines extends JFrame {
 
         //Set Version label position
         GridBagConstraints c = new GridBagConstraints();
-        c.ipady = 15;
+        c.ipady = 13;
         c.ipadx = 10;
         c.weightx = 1;
         c.fill = GridBagConstraints.VERTICAL;
@@ -320,7 +320,7 @@ public class JMines extends JFrame {
                 ((JMenuItem) c).setBorderPainted(false);
         }
         //setting tooltips
-        dimItem.setToolTipText("<html>Change the dimension of the grid.<br>Require a game restart!<html>");
+        dimItem.setToolTipText("<html>Change the boxDimension of the grid.<br>Require a game restart!<html>");
         themeItem.setToolTipText("Require a game restart!");
         startItem.setToolTipText("Start/Restart a game");
         pauseItem.setToolTipText("Pause/Resume a game");
@@ -346,7 +346,7 @@ public class JMines extends JFrame {
         /////
 
         //setting listeners
-        closeItem.addActionListener(new MenuListener(ButtonListenerFactory())); //The listener is used to restart the game once the dimension is set
+        closeItem.addActionListener(new MenuListener(ButtonListenerFactory())); //The listener is used to restart the game once the boxDimension is set
         newItem.addActionListener(new MenuListener(ButtonListenerFactory()));
 
         dimItem.addActionListener(new MenuListener(ButtonListenerFactory()));
