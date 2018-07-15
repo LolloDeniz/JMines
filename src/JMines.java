@@ -10,10 +10,8 @@ import javax.swing.border.EtchedBorder;
 
 public class JMines extends JFrame {
 
-    //fetch screen size
-    private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    private static int DIMX = 500, DIMY = 480;
-    private static double LOCX = (screenSize.getWidth() - DIMY) / 2, LOCY = (screenSize.getHeight() - DIMX) / 2;
+    private static int DIMX, DIMY;
+    private static double LOCX, LOCY;
 
     //set theme
     private MinesTheme currentTheme;
@@ -40,6 +38,40 @@ public class JMines extends JFrame {
     public JMines(Global.themes theme) {
 
         super("JMines");
+
+        //fetch os
+        this.DetectOs();
+        System.out.println("OS detected: " + Global.getgbl().os);
+
+        //fetch screen size
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        switch (Global.getgbl().os){
+            case WINDOWS:
+                DIMX = 505;
+                DIMY = 484;
+                break;
+            case MAC:
+                DIMX = 505;
+                DIMY = 484;
+                break;
+            case UNIX:
+                DIMX = 500;
+                DIMY = 480;
+                break;
+            case SOLARIS:
+                DIMX = 505;
+                DIMY = 484;
+                break;
+            case NOT_FOUND:
+                DIMX = 505;
+                DIMY = 484;
+                break;
+        }
+
+        LOCX = (screenSize.getWidth() - DIMY) / 2;
+        LOCY = (screenSize.getHeight() - DIMX) / 2;
+
         Global.getgbl().nWindows++;
         setLocation((int) LOCX, (int) LOCY);
 
@@ -101,6 +133,22 @@ public class JMines extends JFrame {
         JMines instance = new JMines(theme);
         instance.setLocation(x,y);
         instance.setSize(dimx, dimy);
+    }
+
+    private void DetectOs(){
+        String osString = System.getProperty("os.name").toLowerCase();
+
+        if(osString.contains("win"))
+            Global.getgbl().os = Global.osEnum.WINDOWS;
+
+        if(osString.contains("mac"))
+            Global.getgbl().os = Global.osEnum.MAC;
+
+        if(osString.contains("nix") || osString.contains("nux") || osString.contains("aix"))
+            Global.getgbl().os = Global.osEnum.UNIX;
+
+        if(osString.contains("sunos")) Global.getgbl().os = Global.osEnum.SOLARIS;
+
     }
 
     private JPanel SetGrid() {
@@ -215,7 +263,7 @@ public class JMines extends JFrame {
 
     private JPanel SetBottom() {
 
-        JLabel Version = new JLabel("v1.2.1 (Alpha)");
+        JLabel Version = new JLabel("v 2.1.0 (Alpha)");
         JPanel BottomPanel = new JPanel();
 
         BottomPanel.setLayout(new GridBagLayout());
@@ -448,6 +496,7 @@ public class JMines extends JFrame {
                 }
 
                 gameInstance = new Game(frame, grid, Global.getgbl().gridDim, Global.getgbl().bombRate, frame.currentTheme);
+                gameInstance.ShowGrid();
 
                 pauseButton.setText("Pause");
                 pauseButton.setActionCommand("PAUSE");

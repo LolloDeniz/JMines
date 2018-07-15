@@ -7,7 +7,7 @@ import javax.swing.*;
 
 class InfoPopup extends JFrame {
     private String text = "<html><body><center>Mines Game, inspired by Windows Minesweeper<br>" +
-            "<br>Credits: Lorenzo De Nisi<br>Last Release: 30 May 2018</center></body></html>";
+            "<br>Credits: Lorenzo De Nisi<br>Last Release: 15 July 2018</center></body></html>";
 
     InfoPopup(int x, int y) {
         super("Informations");

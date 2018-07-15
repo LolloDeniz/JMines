@@ -10,6 +10,15 @@ public class Global {
     private Global() {
     }
 
+    public enum osEnum{
+        WINDOWS,
+        MAC,
+        UNIX,
+        SOLARIS,
+        NOT_FOUND       //default
+    }
+
+    public osEnum os=osEnum.NOT_FOUND;
     public int nWindows = 0;
     public boolean debug = false;
 
